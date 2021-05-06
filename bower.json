@@ -1,0 +1,79 @@
+{
+  "name": "struMag",
+  "version": "0.0.0",
+  "dependencies": {
+    "angular-animate": "~1.4.2",
+    "angular-cookies": "~1.4.2",
+    "angular-touch": "~1.4.2",
+    "angular-sanitize": "~1.4.2",
+    "angular-messages": "~1.4.2",
+    "angular-aria": "~1.4.2",
+    "jquery": "~1.11.3",
+    "angular-route": "~1.4.2",
+    "bootstrap": "~3.3.5",
+    "angular-bootstrap": "~1.2.5",
+    "moment": "~2.10.6",
+    "animate.css": "~3.4.0",
+    "angular": "~1.4.10",
+    "angucomplete-alt": "~2.4.0",
+    "angular-advanced-searchbox": "~2.1.0",
+    "angular-pnotify": "~0.0.6",
+    "angular-resource": "1.5.3",
+    "angular-ui": "~0.4.0",
+    "angular-ui-select": "~0.12.0",
+    "angular-ui-sortable": "~0.13.4",
+    "angular-ui-utils": "~0.2.3",
+    "angular-dragdrop": "~1.0.13",
+    "angularUtils-pagination": "angular-utils-pagination#~0.9.0",
+    "components-font-awesome": "~4.3.0",
+    "fancytree": "~2.17.0",
+    "lodash": "~4.3.0",
+    "install": "~1.0.4",
+    "jquery-ui": "~1.11.4",
+    "jquery.fancytree": "fancytree#~2.11.0",
+    "less": "~2.5.0",
+    "ng-context-menu": "~1.0.2",
+    "mrFeedback": "^0.2.0",
+    "pdfjs-viewer": "*",
+    "ng-scrollbars": "0.0.5",
+    "videogular": "~1.2.5",
+    "videogular-buffering": "~1.2.5",
+    "videogular-controls": "~1.2.5",
+    "videogular-overlay-play": "~1.2.5",
+    "videogular-poster": "~1.2.5",
+    "videogular-themes-default": "~1.2.5"
+  },
+  "devDependencies": {
+    "angular-mocks": "~1.4.2"
+  },
+  "overrides": {
+    "bootstrap": {
+      "main": [
+        "less/bootstrap.less",
+        "dist/fonts/glyphicons-halflings-regular.eot",
+        "dist/fonts/glyphicons-halflings-regular.svg",
+        "dist/fonts/glyphicons-halflings-regular.ttf",
+        "dist/fonts/glyphicons-halflings-regular.woff",
+        "dist/fonts/glyphicons-halflings-regular.woff2"
+      ]
+    },
+    "fancytree": {
+      "main": [
+        "dist/jquery.fancytree-all.min.js",
+        "dist/skin-bootstrap/ui.fancytree.min.css"
+      ]
+    },
+    "jquery-ui": {
+      "main": [
+        "jquery-ui.min.js",
+        "themes/base/jquery-ui.min.css"
+      ]
+    }
+  },
+  "resolutions": {
+    "jquery": "~1.11.3",
+    "angular": "~1.4.10",
+    "angular-bootstrap": "~1.2.5",
+    "components-font-awesome": "~4.3.0"
+  }
+}

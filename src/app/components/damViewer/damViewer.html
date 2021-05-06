@@ -1,0 +1,54 @@
+<div class="damViewer">
+    <span class="close-btn" ng-click="closeDamViewer()"><i class="fa fa-times"></i></span>
+    <div class="viewerButtons">
+        <ul>
+            <li id="left-row"><a href="" ng-click="previousMedia()"><i class="fa fa-angle-double-left fa-lg"></i></a></li>
+        </ul>
+    </div>
+    <div class="viewerImage" ng-click="viewLightbox(false)" title="Mostra Anteprima">
+        <img id="currentMedia" ng-src="{{currentMedia.mediaUrl}}"></img>
+    </div>
+    <div class="viewerButtons">
+        <ul>
+            <li id="right-row"><a href="" ng-click="nextMedia()"><i class="fa fa-angle-double-right fa-lg"></i></a></li>
+        </ul>
+    </div>
+    <div class="viewerTitle" ng-bind="currentMedia.mediaCaption"></div>
+</div>
+
+
+<script type="text/ng-template" id="myModalContent.html">
+    <div class="modal-header">
+        <ul class="list-inline leftHeaderContent">
+            <li class="leftListObj"><a href="" ng-click="showSidebar()"><i class="fa fa-th-large"></i></a></li>
+            <li class="leftListObj"><a href="" ng-click="showTree()"><i class="fa fa-align-left"></i></a></li>
+            <li class="modalTitleContainer"><h4 class="modalTitle">{{currentImage.mediaCaption}}</h4></a></li>
+        </ul>
+        <ul class="list-inline centerHeaderContent">
+            <li><a href="" ng-click="firstMedia()"><i class="fa fa-angle-double-left fa-lg"></i></a></li>
+            <li><a href="" ng-click="previousMedia()"><i class="fa fa-angle-left fa-lg"></i></a></li>
+            <li><a href="" ng-click="zoomOut()"><i class="fa fa-search-minus"></i></a></li>
+            <li><a href="" ng-click="goFullScreen()"><i class="fa fa-arrows-alt"></i></a></li>
+            <li><a href="" ng-click="zoomIn()"><i class="fa fa-search-plus"></i></a></li>
+            <li><a href="" ng-click="nextMedia()"><i class="fa fa-angle-right fa-lg"></i></a></li>
+            <li><a href="" ng-click="lastMedia()"><i class="fa fa-angle-double-right fa-lg"></i></a></li>
+        </ul>
+        <ul class="list-inline rightHeaderContent">
+            <li class="rightListObj"><a href="" ng-click="closeMyModal()"><i class="fa fa-close"></i></a></li>
+        </ul>
+    </div>
+    <div class="modal-body">
+        <div class="left-sidebar" style="display:none">
+            <div class="single-image" ng-repeat="i in items">
+                <img ng-click="selectMedia($index)" ng-class="{selected: i.id == currentId}" ng-src="{{i.mediaUrl}}">
+            </div>
+        </div>
+        <div class="left-tree" style="display:none">
+            <fancy-tree tree-config="treeConfigViewer"></fancy-tree>
+        </div>
+        <div class="container">
+            <img id="currentImage" ng-src="{{currentImage.mediaUrlOriginal}}">
+        </div>
+    </div>
+
+</script>

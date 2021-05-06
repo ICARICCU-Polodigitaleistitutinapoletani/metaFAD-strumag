@@ -1,0 +1,695 @@
+<div id="struMagContainer">
+    <div ng-if="openMetaMediaViewer">
+        <dam-media-viewer medias="metaMediaViewerList.medias" options="metaMediaViewerList.options"></dam-media-viewer>
+    </div>
+    <div class="row mainContainerDamViewer" ng-click="closePosition()">
+        <div class="col-xs-12">
+            <div class="containerDamViewer">
+                <dam-viewer media-list="mediaListArray" tree-source="treeSource"></dam-viewer>
+            </div>
+            <div class="displayBackToLinkStru" ng-if="backId">
+                <i class="fa fa-arrow-left"></i>
+                <a ng-click="goToStruLink(backId,null)">Torna al metadato collegato</a>
+            </div>
+            <div class="displayDamViewer">
+                <p ng-click="showDamViewer()" ng-if="!damViewerVisible"><i
+                        class="glyphicon glyphicon-picture pictureDisplayViewer"></i>Mostra Immagini</p>
+                <p ng-click="hideDamViewer()" ng-if="damViewerVisible"><i
+                        class="glyphicon glyphicon-picture pictureDisplayViewer"></i>Nascondi Immagini</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-content col-xs-12" id="magSubcontainer">
+
+        <div class="tab-pane active" id="scheda">
+
+            <div id="topSchedaSf" class="col-xs-12" ng-click="closePosition()">
+                <uib-accordion close-others="true" class="accordion-info">
+                    <uib-accordion-group is-open="status.open" panel-class="panel-default">
+                        <uib-accordion-heading>
+                            Informazioni generali <i class="pull-right glyphicon"
+                                ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+                        </uib-accordion-heading>
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <div class="input-group">
+                                    <p id="applicateLabel">Stato</p>
+                                </div>
+                            </div>
+                            <div class="col-xs-9">
+                                <div class="col-xs-12">
+                                    <label class="checkbox-inline"><input id="check0" type="checkbox"
+                                            ng-click="exclusiveCheck(0)"
+                                            ng-checked="generalInfo.state===0">Lavorazione</label>
+                                    <label class="checkbox-inline"><input id="check1" type="checkbox"
+                                            ng-click="exclusiveCheck(1)"
+                                            ng-checked="generalInfo.state===1">Revisione</label>
+                                    <label class="checkbox-inline"><input id="check2" type="checkbox"
+                                            ng-click="exclusiveCheck(2)"
+                                            ng-checked="generalInfo.state===2">Pubblicato</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <div class="input-group">
+                                    <p id="applicateLabel">Titolo</p>
+                                </div>
+                            </div>
+                            <div class="col-xs-9">
+                                <div class="button-group">
+                                    <input id="title_t" type="text" class="form-control" placeholder="Titolo"
+                                        aria-label="..." ng-model="generalInfo.title">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <div class="input-group">
+                                    <p id="applicateLabel">Record collegato</p>
+                                </div>
+                            </div>
+                            <div class="col-xs-9">
+                                <div class="button-group">
+                                    <angucomplete-alt id="linkedRecord" placeholder="Cerca record da collegare"
+                                        remote-url="{{config.serverRest + 'metafad/getRecords?term='}}" title-field="text"
+                                        input-class="form-control" text-searching="Ricerca..."
+                                        selected-object="selectedLinkedRecordCallback" minlength="1"
+                                        remote-url-request-with-credentials=true pause="300" />
+                                </div>
+                            </div>
+                        </div>
+                    </uib-accordion-group>
+                </uib-accordion>
+            </div>
+            <ul class="nav-tabs nav primaryTab">
+                <li ng-click="selectStruTab('sf')" ng-class="{'active':struTab==='sf'}">
+                    <a href="">Struttura<br />Fisica</a>
+                </li>
+                <li ng-show="state!=='ecommerce'" ng-click="selectStruTab('sl')" ng-class="{'active':struTab==='sl'}">
+                    <a href="">Struttura<br />Logica</a>
+                </li>
+            </ul>
+            <!--<uib-tabset>-->
+            <div class="struTabContainer" ng-show="struTab==='sf'" ng-click="closePosition()">
+                <div id="sf" class="tab-content col-xs-12 primaryContent">
+                    <ul class="nav-tabs nav secondaryTab">
+                        <li ng-click="changeCurrentArray(0)" ng-class="{'active':currentTab===0}">
+                            <a href="">Immagini</a>
+                        </li>
+                        <li ng-click="changeCurrentArray(1)" ng-class="{'active':currentTab===1}">
+                            <a href="">Documenti</a>
+                        </li>
+                        <li ng-click="changeCurrentArray(2)" ng-class="{'active':currentTab===2}">
+                            <a href="">Audio</a>
+                        </li>
+                        <li ng-click="changeCurrentArray(3)" ng-class="{'active':currentTab===3}">
+                            <a href="">Video</a>
+                        </li>
+                        <li ng-click="changeCurrentArray(4)" ng-class="{'active':currentTab===4}">
+                            <a href="">Contenitori</a>
+                        </li>
+                    </ul>
+
+                    <div>
+                        <div class="row row-contentSearchDam" ng-if="state!=='ecommerce'">
+                            <div class="col-xs-2">
+                                <p id="applicateLabel" class="rowLabel">Aggiungi Elementi</p>
+                            </div>
+                            <div class="col-xs-10" style="padding:0">
+                                <nit-advanced-searchbox class="col-xs-12" ng-model="searchParams"
+                                    parameters="availableSearchParams" parametersDisplayLimit="8"
+                                    searchThrottleTime="200" placeholder="Cerca..."></nit-advanced-searchbox>
+                            </div>
+                        </div>
+                        <div class="row row-appliedPattern" ng-if="state!=='ecommerce'">
+                            <div class="col-xs-2">
+                                <p id="applicateLabel" class="rowLabel">Applica nomenclatura</p>
+                            </div>
+                            <div class="col-xs-2">
+                                <div class="btn-group">
+                                    <select class="form-control" ng-model="dataForNewPattern.type"
+                                        tooltip-trigger="mouseenter" tooltip-placement="bottom"
+                                        uib-tooltip="{{tooltipPatternType}}" tooltip-class="custom-tooltip">
+                                        <option value="pag">Pattern:
+                                            {{currentTab === 0?'paginazione':'numerazione progressiva'}}</option>
+                                        <option value="cart" ngif="currentTab===0">Pattern: cartulazione</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div
+                                ng-class="{'col-xs-2': dataForNewPattern.type==='pag', 'col-xs-3': dataForNewPattern.type==='cart'}">
+                                <!-- <div class="input-group"> -->
+                                    <input type="text" class="form-control" placeholder="Nomenclatura *"
+                                        aria-label="..." ng-model="dataForNewPattern.text" tooltip-trigger="mouseenter"
+                                        tooltip-placement="bottom" uib-tooltip="{{tooltipPatternText}}"
+                                        tooltip-class="custom-tooltip" />
+                                <!-- </div> -->
+                            </div>
+                            <div class="col-xs-1">
+                                <!-- <div class="input-group"> -->
+                                    <input type="text" class="form-control" placeholder="Inizio numerazione *"
+                                        aria-label="..." ng-model="dataForNewPattern.start" tooltip-trigger="mouseenter"
+                                        tooltip-placement="bottom" uib-tooltip="{{tooltipPatternStart}}"
+                                        tooltip-class="custom-tooltip" />
+                                <!-- </div> -->
+                            </div>
+                            <div class="col-xs-1" ng-if="dataForNewPattern.type==='pag'">
+                                <!-- <div class="input-group"> -->
+                                    <input type="number" class="form-control" placeholder="Step numerazione"
+                                        aria-label="..." ng-model="dataForNewPattern.step" tooltip-trigger="mouseenter"
+                                        tooltip-placement="bottom" uib-tooltip="{{tooltipPatternStep}}"
+                                        tooltip-class="custom-tooltip" />
+                                <!-- </div> -->
+                            </div>
+                            <div class="col-xs-1">
+                                <!-- <div class="input-group"> -->
+                                    <input type="number" class="form-control" placeholder="Indice finale"
+                                        aria-label="..." ng-model="dataForNewPattern.endIndex"
+                                        tooltip-trigger="mouseenter" tooltip-placement="bottom"
+                                        uib-tooltip="{{tooltipPatternEndIndex}}" tooltip-class="custom-tooltip" />
+                                <!-- </div> -->
+                            </div>
+                            <div class="col-xs-2">
+                                <div class="input-group" tooltip-trigger="mouseenter" tooltip-placement="bottom"
+                                    uib-tooltip="{{tooltipPatternFillWithZeros}}" tooltip-class="custom-tooltip">
+                                    <input type="checkbox" ng-model="dataForNewPattern.fillWithZeros" />
+                                    <label class="checkbox-label">Riempi con "0"</label>
+                                </div>
+                            </div>
+                            <div class="col-xs-1">
+                                <div class="input-group">
+                                    <button type="button" class="btn btn-primary bg-blue" id="submitButton"
+                                        ng-click="applyPattern()"
+                                        ng-disabled="!arrayCurrent || arrayCurrent.length == 0">Applica</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row row-appliedLicense" ng-if="state==='ecommerce' && currentTab===0">
+                            <div class="col-xs-2">
+                                <p id="appliedLicenseLabel" class="rowLabel">Applica licenza</p>
+                            </div>
+                            <div class="col-xs-5">
+                                <!-- <div class="input-group"> -->
+                                    <angucomplete-alt id="licenseInput" placeholder="Cerca licenza da collegare"
+                                        pause="100" remote-url="{{licenseUrl}}"
+                                        remote-url-response-formatter="formatLicenseResponse" search-fields="text"
+                                        title-field="text" input-class="form-control" text-searching="Ricerca..."
+                                        selected-object="selectedLicenseCallback" minlength="2" ,
+                                        remote-url-request-with-credentials=true pause="300" />
+                                <!-- </div> -->
+                            </div>
+                            <div class="col-xs-2">
+                                <!-- <div class="input-group"> -->
+                                    <input id="startAppliedLicense" type="number" class="form-control"
+                                        placeholder="Inizio" aria-label="..." ng-model="appliedLicenses.start">
+                                <!-- </div> -->
+                            </div>
+                            <div class="col-xs-2">
+                                <!-- <div class="input-group"> -->
+                                    <input id="endAppliedLicense" type="number" class="form-control" placeholder="Fine"
+                                        aria-label="..." ng-model="appliedLicenses.end">
+                                <!-- </div> -->
+                            </div>
+                            <div class="col-xs-1">
+                                <div class="input-group">
+                                    <button type="button" class="btn btn-primary bg-blue" id="submitButton"
+                                        ng-click="applyLicenses()">Applica</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row tableToolbar"
+                            ng-show="currentTab!==4 && arrayCurrent && arrayCurrent.length > 0">
+                            <!-- <div class="col-xs-1" style="padding:0; padding-left: 10px;">
+                                    <button type="button" class="btn btn-primary bg-blue" ng-click="selectAll()"> {{buttonSelectText}}</button> 
+                                </div>-->
+                            <div class="col-xs-6">
+                                <span class="selectAll" ng-click="selectAll()">
+                                    {{buttonSelectText}}
+                                </span>
+                                <span class="selected-items-num">
+                                    <i ng-if="selectedItems > 0">
+                                        ({{selectedItems}} {{selectedItems === 1 ? 'elemento selezionato' : 'elementi selezionati'}})
+                                    </i>
+                                </span>
+                            </div>
+                            <div class="col-xs-6 align-right">
+                                Mostra
+                                <select ng-model="paginationOpt.itemsPage" class="form-control auto-width smaller"
+                                    ng-options="o as o for o in paginationOpt.itemPerPageOptions"></select>
+                                elementi
+                            </div>
+                        </div>
+                        <!-- ui-sortable="sortableOptions" -->
+                        <div ng-if="currentTab!==4" class="tab-pane typeMedia active listMedia" id="img">
+                            <div id="sortImage" ui-sortable="sortableOptions" ng-model="itemsInPage">
+                                <!-- ng-model="arrayImage" -->
+                                <div class="item row" pagination-id="list"
+                                    dir-paginate="obj in arrayCurrent | itemsPerPage: paginationOpt.itemsPage"
+                                    ng-init="setCurrentItemInPage(paginationOpt, obj)" context-menu
+                                    data-target="menu-right-{{$index}}" ng-click="closePosition()"
+                                    id="item-sf-{{obj.id}}">
+                                    <div class="idItem col-xs-1">
+                                        <!--  -->
+                                        <span
+                                            class="itemNumber">{{ 1 + $index + paginationOpt.currentPage * paginationOpt.itemsPage}}</span>
+                                        <input type="checkbox" ng-model="obj.isChecked"
+                                            ng-click="calculateChecked($event, $index, obj.isChecked)">
+                                    </div>
+                                    <div class="col-xs-2 imageItem" ng-click="openBox($event, obj)" title="Mostra anteprima">
+                                        <img ng-src="{{getMediaImageUrl(obj)}}">
+                                    </div>
+                                    <div class="info col-xs-6">
+                                        <div class="form-group labelPattern">
+                                            <input ng-model="obj.label" class="textTitle" type="text"
+                                                placeholder="Nomenclatura" ng-blur="metadatiMediaChanged()">
+                                        </div>
+                                        <div class="form-group">
+                                            <input ng-model="obj.file_name" class="textTitle" disabled="true"
+                                                type="text" placeholder="Nome file">
+                                        </div>
+                                        <span class="box-license" ng-if="obj.license">Licenza:
+                                            {{obj.license.text}}</span>
+                                    </div>
+                                    <div class="dropdown" style="position:absolute;z-index:9999; top: 0px !important"
+                                        id="menu-right-{{$index}}">
+                                        <ul class="dropdown-menu" role="menu">
+                                            <li>
+                                                <a class="pointer" role="menuitem" tabindex="1"
+                                                    ng-click="moveUp($index)">
+                                                    Sposta sopra
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="pointer" role="menuitem" tabindex="2"
+                                                    ng-click="moveDown($index)">
+                                                    Sposta sotto
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="btn-Action col-xs-3" ng-if="state!=='ecommerce'">
+                                        <i ng-click='dropItem(obj.id)' class="fa fa-times"></i>
+                                        <i class="fa fa-align-left" ng-if="currentTab===0"
+                                            ng-click="openPosition($event,obj)"></i>
+                                        <i ng-click="changeTitle(obj.id)" class="fa fa-pencil"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div ng-if="currentTab===4" class="tab-pane typeMedia" ng-class="{'active':currentTab===4}"
+                            id="cont">
+                            Clicca su "Cerca" e seleziona il o i "Contenitori" da importare. I media ivi contenuti
+                            saranno automaticamente distribuiti tra le varie sezioni ("Immagini", "Documenti", "Video" e
+                            "Audio") in base al tipo di file.
+                        </div>
+                        <div class="row bottomTableToolbar"
+                            ng-show="currentTab!==4 && arrayCurrent && arrayCurrent.length > 0 && paginationOpt.itemsPage > 5 && itemsInitialized">
+                            <div class="col-xs-6">
+                                <span class="selectAll" ng-click="selectAll()">
+                                    {{buttonSelectText}}
+                                </span>
+                                <span class="selected-items-num">
+                                    <i ng-if="selectedItems > 0">
+                                        ({{selectedItems}} {{selectedItems === 1 ? 'elemento selezionato' : 'elementi selezionati'}})
+                                    </i>
+                                </span>
+                            </div>
+                            <div class="col-xs-6 align-right">
+                                Mostra
+                                <select ng-model="paginationOpt.itemsPage" class="form-control auto-width smaller"
+                                    ng-options="o as o for o in paginationOpt.itemPerPageOptions"></select>
+                                elementi
+                            </div>
+                        </div>
+                        <div class="row" ng-show="currentTab!==4 && arrayCurrent && arrayCurrent.length > 0">
+                            <div class="col-xs-6 col-xs-offset-3 paginationContainer">
+                                <dir-pagination-controls pagination-id="list"
+                                    on-page-change="changeCurrentPage(paginationOpt,newPageNumber)">
+                                </dir-pagination-controls>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="struTabContainer" ng-show="struTab==='sl'">
+                <div id="sl" class="primaryContent">
+                    <div class="row">
+                        <div class="col-xs-3 index-col" id="tree" ng-show="indexOpened">
+                            <h4 class="sl-tree-header">
+                                <i class="fa fa-chevron-circle-left index-toggler"
+                                    ng-click="toggleIndex()" tooltip-trigger="mouseenter"
+                                    tooltip-placement="right" uib-tooltip="Nascondi indice"></i>
+                                <div class="sl-tree-header-label" ng-click="deselectNode()">Indice:</div>
+                                <div class="sl-tree-header-btnBox">
+                                    <i class="fa fa-external-link-square right"
+                                        ng-click="createNewStruIndexItem('link')" tooltip-trigger="mouseenter"
+                                        tooltip-placement="bottom" uib-tooltip="Aggiungi link a metadato."></i>
+                                    <i class="fa fa-plus-square-o right" ng-click="createNewStruIndexItem('folder')"
+                                        tooltip-trigger="mouseenter" tooltip-placement="bottom"
+                                        uib-tooltip="Aggiungi nuova cartella."></i>
+                                </div>
+                            </h4>
+                            <fancy-tree tree-config="treeConfig"></fancy-tree>
+                        </div>
+                        <div class="media-mng-col {{ indexOpened ? 'col-xs-9' : 'col-xs-12 index-closed' }}">
+                            <i class="fa fa-chevron-circle-right index-toggler" ng-show="!indexOpened"
+                                ng-click="toggleIndex()" tooltip-trigger="mouseenter"
+                                tooltip-placement="right" uib-tooltip="Mostra indice"></i>
+                            <div class="folderContainer-col {{windowWidth < 1124 ? 'wider' : ''}}" ng-if="!tree.getActiveNode() || removingNode">
+                                Seleziona un elemento dall'indice di sinistra per modificarne il contenuto
+                            </div>
+                            <!-- CONTENUTO -->
+                            <div class="folderContainer-col {{windowWidth < 1124 ? 'wider' : ''}}" ng-show="!nodeLinkStru" 
+                                ng-if="tree.getActiveNode() && !removingNode">
+                                <!-- NOME -->
+                                <div class="input-group">
+                                    <p id="applicateLabel">Nome</p>
+                                </div>
+                                <div class="input-group input-folder-name">
+                                    <input type="text" class="form-control" id="nameFolder"
+                                        ng-model="logicalStruFolder.nameFolder" aria-label="..."
+                                        tooltip-trigger="mouseenter" tooltip-placement="top"
+                                        uib-tooltip="Nome della cartella.">
+                                    <button type="button" class="btn btn-primary bg-blue confirmButton"
+                                        ng-click="confirmTitleFolder()">Modifica</button>
+                                </div>
+                                <!-- CONTENUTO ELEMENTO INDICE -->
+                                <div class="borderLabel"> Contenuto Cartella</div>
+                                <div class="folderContainer borderDash">
+                                    <ul class="nav-tabs nav secondaryTab folderNav">
+                                        <li ng-repeat="type in availableArrayForSel"
+                                            ng-click="changeCurrentFolderContentType(type)"
+                                            ng-class="{'active':currentFolderContentType===type}"
+                                            role="button" tabindex="$index" class="ng-click-active"><a
+                                                href="">{{type}}</a></li>
+                                    </ul>
+                                    <div id="boxItemFolder">
+                                        <div ng-if="!sonsFolder || sonsFolder.length === 0">{{ getEmptyFolderText() }}
+                                        </div>
+                                        <div ng-if="sonsFolder && sonsFolder.length > 0">
+                                            <div class="row">
+                                                <div class="col-xs-12 align-left">
+                                                    <i class="fa fa-th-large folder-items-view-toggler {{currentFolderActiveView === 'preview' ? 'active' : ''}}" ng-click="changeFolderItemsView('preview')" tooltip-trigger="mouseenter"
+                                                        tooltip-placement="bottom" uib-tooltip="Visualizza anteprime"></i>
+                                                    <i class="fa fa-th-list folder-items-view-toggler {{currentFolderActiveView === 'list' ? 'active' : ''}}" ng-click="changeFolderItemsView('list')" tooltip-trigger="mouseenter"
+                                                        tooltip-placement="bottom" uib-tooltip="Visualizza lista"></i>
+                                                    <span class="menu-divider"></span>
+                                                    <span class="selectAll" ng-click="toggleAllFolderMedia()">
+                                                        {{folderMediaButtonSelectText}}
+                                                    </span>
+                                                    <span class="itemsPerPageSelector">
+                                                        Mostra
+                                                        <select ng-model="folderPaginationOpt.itemsPage"
+                                                        class="form-control auto-width smaller"
+                                                        ng-options="o as o for o in folderPaginationOpt.itemPerPageOptions"></select>
+                                                        elementi
+                                                    </span>
+                                                </div>
+                                                <div class="col-xs-12 align-left">
+                                                    <span class="selected-items-num">
+                                                        <i ng-if="selectedFolderMedia > 0">
+                                                            ({{selectedFolderMedia}} {{selectedFolderMedia === 1 ? 'elemento selezionato' : 'elementi selezionati'}})
+                                                        </i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="item currentFolder-item {{obj.selected == true ? 'item-selected' : ''}} {{currentFolderActiveView}}" 
+                                                data-item-id="{{obj.id}}"
+                                                data-item-type="{{obj.type}}" pagination-id="folder" 
+                                                ng-click="toggleCurrentFolderSelected($event, obj, $index)"
+                                                dir-paginate="obj in sonsFolder | itemsPerPage: folderPaginationOpt.itemsPage">
+                                                <div class="selectionMark">
+                                                    <i class="fa fa-check"></i></div>
+                                                <div class="img-container"><img ng-src="{{getMediaImageUrl(obj)}}" class="{{obj.alias ? '' : 'no-margin'}}"></div>
+                                                <div class="item-box-top-left fade showOnHover">
+                                                    {{obj.pos+1}}{{obj.alias ? '(alias)' : ''}}</div>
+                                                <div ng-if="obj.alias" class="item-box-top-left hideOnHover"><i
+                                                        class="fa fa-link"></i></div>
+                                                <div class="right-sidebar-transparent fade showOnHover">
+                                                    <i ng-if="$index===sonsFolder.length-1 && !obj.alias"
+                                                        class="fa fa-link" style="color:#fff;opacity:1"
+                                                        ng-click="openTree($event, obj)"></i>
+                                                    <i class="fa fa-search" style="color:#fff;opacity:1"
+                                                        ng-click="openBox($event, obj)"></i>
+                                                    <i ng-if="!obj.alias" class="fa fa-trash btn-delete"
+                                                        style="color:#fff;opacity:1"
+                                                        ng-click="removeMedia($event, sonsFolder.indexOf(obj))"></i>
+                                                    <i ng-if="obj.alias" class="fa fa-trash btn-delete"
+                                                        style="color:#fff;opacity:1"
+                                                        ng-click="removeAlias($event, obj)"></i>
+                                                </div>
+                                                <div class="bottom-sidebar">
+                                                    <span class="item-label" tooltip-trigger="mouseenter"
+                                                    tooltip-placement="bottom"
+                                                    uib-tooltip="{{obj.label && obj.label.length > 10 ? obj.label : ''}}">{{obj.label}}</span>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-12 paginationContainer">
+                                                    <dir-pagination-controls pagination-id="folder"
+                                                        on-page-change="changeCurrentPage(folderPaginationOpt, newPageNumber)">
+                                                    </dir-pagination-controls>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="folderContainer-col freeMedia-container {{windowWidth < 1124 ? 'wider' : ''}}"  
+                                ng-show="!nodeLinkStru">
+                                <!-- AGGIUNTA ELEMENTI -->
+                                <div class="borderLabel">
+                                    <span tooltip-trigger="mouseenter"
+                                        tooltip-placement="top"
+                                        uib-tooltip="Seleziona gli elementi da aggiungere alla cartella. La selezione può avvenire sia tramite indicazione della sequenza tramite gli input di seguito, sia per selezione diretta dell'elemento tra i media non ancora associati ad alcuna cartella.">
+                                        Media liberi:</span>
+                                </div>
+                                <!-- MEDIA LIBERI -->
+                                <div class="folderContainer">
+                                    <p id="sequenzaLabel">
+                                        <span  tooltip-trigger="mouseenter"
+                                        tooltip-placement="top"
+                                        uib-tooltip="Indica la posizione di partenza e di fine per la selezione degli elementi da aggiugnere alla cartella.">Sequenza</span></p>
+                                    <div class="box-sequenza row">
+                                        <div class="col col-xs-3" 
+                                            tooltip-trigger="mouseenter" tooltip-placement="top"
+                                            uib-tooltip="Indica la posizione di partenza per la selezione.">
+                                            <span>da: </span>
+                                            <input type="number" class="form-control smaller"
+                                                ng-change="changeSelectedObj()"
+                                                ng-model="logicalStruFolder.fromSeq" id="fromSequenceView"
+                                                aria-label="..."
+                                                ng-disabled="!arrayLogic || arrayLogic.length === 0">
+                                        </div>
+                                        <div class="col col-xs-3"
+                                            tooltip-trigger="mouseenter" tooltip-placement="top"
+                                            uib-tooltip="Indica la posizione di fine per la selezione.">
+                                            <span>a: </span>
+                                            <input type="number" class="form-control smaller"
+                                                ng-change="changeSelectedObj()"
+                                                ng-model="logicalStruFolder.toSeq" id="toSequenceView"
+                                                aria-label="..."
+                                                ng-disabled="!arrayLogic || arrayLogic.length === 0">
+                                        </div>
+                                        <div class="col col-xs-4" tooltip-trigger="mouseenter" tooltip-placement="top"
+                                        uib-tooltip="Scegli la tipologia di media da cui attingere.">
+                                            <span>di: </span>
+                                            <select class="form-control smaller"
+                                                ng-model="logicalStruFolder.arrForSel"
+                                                ng-options="o as o for o in availableArrayForSel"
+                                                ng-change="changeArrToSel()" ></select>
+                                        </div>
+                                        <div class="col col-xs-2">
+                                            <button type="button" class="btn btn-primary bg-blue confirmButton"
+                                                id="confirm"
+                                                ng-click="confirmAction(tree.getActiveNode().key,true)">Aggiungi</button>
+                                        </div>
+                                    </div>
+                                    <div id="freeMediaFolder">
+                                        <span ng-if="!arrayLogic || arrayLogic.length === 0">
+                                            {{getEmptyFreeMediaFolderText()}}</span>
+                                        <div ng-if="arrayLogic && arrayLogic.length > 0">
+                                            <div class="row">
+                                                <div class="col-xs-12 align-left">
+                                                    <i class="fa fa-th-large folder-items-view-toggler {{currentFreeMediaActiveView === 'preview' ? 'active' : ''}}" ng-click="changeFreeMediaItemsView('preview')" tooltip-trigger="mouseenter"
+                                                        tooltip-placement="bottom" uib-tooltip="Visualizza anteprime"></i>
+                                                    <i class="fa fa-th-list folder-items-view-toggler {{currentFreeMediaActiveView === 'list' ? 'active' : ''}}" ng-click="changeFreeMediaItemsView('list')" tooltip-trigger="mouseenter"
+                                                        tooltip-placement="bottom" uib-tooltip="Visualizza lista"></i>
+                                                    <span class="menu-divider"></span>
+                                                    <span class="selectAll" ng-click="toggleAllFreeMedia()">
+                                                        {{freeMediaButtonSelectText}}
+                                                    </span>
+                                                    <span class="itemsPerPageSelector">
+                                                        Mostra
+                                                        <select ng-model="freeMediaPaginationOpt.itemsPage"
+                                                            class="form-control auto-width smaller"
+                                                            ng-options="o as o for o in freeMediaPaginationOpt.itemPerPageOptions"></select>
+                                                        elementi
+                                                    </span>
+                                                </div>
+                                                <div class="col-xs-12 align-left">
+                                                    <span class="selected-items-num">
+                                                        <i ng-if="selectedFreeMedia > 0">
+                                                            ({{selectedFreeMedia}} {{selectedFreeMedia === 1 ? 'elemento selezionato' : 'elementi selezionati'}})
+                                                        </i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="item freeMedia-item {{obj.selected == true ? 'item-selected' : ''}}  {{currentFreeMediaActiveView}}" 
+                                                ng-click="toggleFreeMediaSelected($event, obj, $index)"
+                                                data-item-id="{{obj.id}}" data-item-type="{{obj.type}}" data-free-media="true"
+                                                pagination-id="freeMedia"
+                                                dir-paginate="obj in arrayLogic | itemsPerPage: freeMediaPaginationOpt.itemsPage">
+                                                <div class="selectionMark">
+                                                    <i class="fa fa-check"></i></div>
+                                                <div class="img-container"><img ng-src="{{getMediaImageUrl(obj)}}"></div>
+                                                <div class="item-box-top-left fade showOnHover">{{obj.pos+1}}</div>
+                                                <div class="right-sidebar-transparent fade showOnHover">
+                                                    <i class="fa fa-search" style="color:#fff;opacity:1 !important"
+                                                        ng-click="openBox($event, obj)"></i>
+                                                </div>
+                                                <div class="bottom-sidebar"><span class="item-label">{{obj.label}}</span></div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-12 paginationContainer">
+                                                    <dir-pagination-controls pagination-id="freeMedia"
+                                                        on-page-change="changeCurrentPage(freeMediaPaginationOpt, newPageNumber)">
+                                                    </dir-pagination-controls>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- METADATO COLLEGATO -->
+                            <div class="box-inputLinkStru" ng-show="tree.getActiveNode() && nodeLinkStru">
+                                <div class="input-group">
+                                    <p id="applicateLabel">Metadato collegato:</p>
+                                </div>
+                                <div>
+                                    <angucomplete-alt id="linkedStru" placeholder="Cerca Metadato da collegare"
+                                        remote-url="{{config.serverRoot + 'list?search='}}" title-field="title"
+                                        input-class="form-control" text-searching="Ricerca..."
+                                        selected-object="selectedStruCallback" minlength="3"
+                                        remote-url-request-with-credentials=true pause="300" />
+                                </div>
+                                <div ng-if="nodeLinkStru.data.struLink.id">
+                                    <div class="btn btn-primary bg-blue"
+                                        ng-click="goToStruLink(nodeLinkStru.data.struLink.id,idMetadato)">Vai al
+                                        metadato</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--</uib-tabset>-->
+        </div>
+
+        <div class="tab-pane" id="storico">
+
+        </div>
+
+    </div>
+    <div id="containerPagePopover" ng-if="objPopoverPosition"
+        style="top:{{popoverPosition.top}};left:{{popoverPosition.left}}">
+        <div class="header">Scegli posizione</div>
+        <div class="btn-group-vertical" data-toggle="buttons">
+
+            <label id="optionSidePage0" ng-class="{sideActive: objPopoverPosition.side == 0}" class="btn btn-default"
+                ng-click="sidePageChecked(0, objPopoverPosition.id)">
+                <input ng-model="objPopoverPosition.side" type="radio" name="options" value="0"> Entrambe
+            </label>
+            <label id="optionSidePage1" ng-class="{sideActive: objPopoverPosition.side == 1}" class="btn btn-default"
+                ng-click="sidePageChecked(1, objPopoverPosition.id)">
+                <input ng-model="objPopoverPosition.side" type="radio" name="options" value="1"> Sinistra
+            </label>
+            <label id="optionSidePage2" ng-class="{sideActive: objPopoverPosition.side == 2}" class="btn btn-default"
+                ng-click="sidePageChecked(2, objPopoverPosition.id)">
+                <input ng-model="objPopoverPosition.side" type="radio" name="options" value="2"> Destra
+            </label>
+            <label id="optionSidePage3" ng-class="{sideActive: objPopoverPosition.side == 3}" class="btn btn-default"
+                ng-click="sidePageChecked(3, objPopoverPosition.id)">
+                <input ng-model="objPopoverPosition.side" type="radio" name="options" value="3"> Parte
+            </label>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="formButtons">
+    <div class="content">
+        <input class=" btn btn-flat btn-info" type="button" value="Salva" ng-click="saveData(0)"><input
+            class="btn btn-flat" type="button" value="Salva e chiudi" ng-click="saveData(1)"><input
+            class=" btn btn-flat" type="button" ng-click="goToTeca()" value="Annulla">
+    </div>
+</div>
+
+<!-- Modal -->
+<script type="text/ng-template" id="modal-dam.html">
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="closeModal()"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">DAM</h4>
+    </div>
+    <div class="modal-body">
+        <iframe class="widthIframe" ng-src="{{iframeDamUrl}}" frameborder="0" height="{{iframeHeight}}"></iframe>
+    </div>
+</script>
+
+<script type="text/ng-template" id="boxNonModal.html">
+    <div class="modal-header modal-draggable">
+        <ul class="list-inline leftHeaderContent">
+            <li class="modalTitleContainer"><h4 class="modalTitle"> 
+                {{posImage ? posImage + ' - ': ''}}{{titleImage}} </h4></a></li>
+        </ul>
+        <ul class="list-inline centerHeaderContent">
+            <li><a href="" ng-click="zoomOut()"><i class="fa fa-search-minus"></i></a></li>
+            <!-- <li><a href="" ng-click="goFullScreen()"><i class="fa fa-arrows-alt"></i></a></li> -->
+            <li><a href="" ng-click="zoomIn()"><i class="fa fa-search-plus"></i></a></li>
+        </ul>
+        <ul class="list-inline rightHeaderContent">
+            <li class="rightListObj"><a href="" ng-click="close()"><i class="fa fa-close"></i></a></li>
+        </ul>
+    </div>
+
+    <div class="modal-body">
+        <img ng-src="{{sourceImage}}" style="height:{{initialImgHeight}}px;width:{{initialImgWidth}}px;transform-origin: top left; -moz-transform:scale({{setZoom}}); -webkit-transform:scale({{setZoom}}); transform:scale({{setZoom}})">
+    </div>
+</script>
+
+<script type="text/ng-template" id="modal-treeAlias.html">
+  <div class="modal-header modal-treeAlias">
+    <button type="button" class="close" ng-click="closeModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <h4 class="modal-title">Collega media a un nuovo capitolo</h4>
+  </div>
+  <div class="modal-body">
+      <fancy-tree tree-config="treeConfigAlias"></fancy-tree>
+  </div>
+</script>
+
+<!--
+<div class="popover" role="tooltip" id="popoverContent">
+<div class="arrow"></div>
+<h3 class="popover-title"></h3>
+<div id="containerPagePopover">
+<div class="btn-group-vertical" data-toggle="buttons">
+<label class="btn btn-primary">
+<input type="radio" name="options" id="optionSidePage0" autocomplete="off" ng-click="sidePageChecked(0, 1)"> Entrambe
+</label>
+<label class="btn btn-primary">
+<input type="radio" name="options" id="optionSidePage1" autocomplete="off" ng-click="sidePageChecked(1, 1)"> Sinistra
+</label>
+<label class="btn btn-primary">
+<input type="radio" name="options" id="optionSidePage2" autocomplete="off" ng-click="sidePageChecked(2, 1)"> Destra
+</label>
+</div>     
+</div> 
+</div>-->

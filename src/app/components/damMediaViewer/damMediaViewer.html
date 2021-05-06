@@ -1,0 +1,82 @@
+<div class="damMediaViewer modal-preview animate-modal-preview modal-mode with-pagination" >
+    <div class="box-numNav" ng-if="damMediaViewer.totalMedias>1">
+        <uib-pagination total-items="damMediaViewer.totalMedias" ng-model="damMediaViewer.currentMedia" class="pagination-sm" boundary-links="true" first-text="Inizio" rotate="true" force-ellipses="true" last-text="Fine" items-per-page="1" max-size="10" direction-links="false" ></uib-pagination>
+    </div>
+    <div class="header">
+        <div class="box-btnHeader box-btnHeader-left">
+            <a class="btn-grid btnHeader" ng-class="{'active':damMediaViewer.panelActive}" ng-click="damMediaViewer.panelActive=damMediaViewer.toggleEle(damMediaViewer.panelActive)">
+                <span class="fa fa-th-large"></span>
+            </a>
+            <a class="btn-download btnHeader" ng-href="{{damMediaViewer.media.url}}" target="_blank">
+                <span class="fa fa-download"></span>
+            </a>
+            <a class="btn-zoom btnHeader" ng-if="damMediaViewer.media.type==='IMAGE'" ng-click="damMediaViewer.zoomOut()">
+                <span class="fa fa-search-minus"></span>
+            </a>
+            <a class="btn-zoom btnHeader" ng-if="damMediaViewer.media.type==='IMAGE'" ng-click="damMediaViewer.zoomIn()">
+                <span class="fa fa-search-plus"></span>
+            </a>
+        </div>
+        <div class="title">{{damMediaViewer.media.title}}</div>
+        <div class="btn-close" ng-if="damMediaViewer.options.btnClose" ng-click="damMediaViewer.close()">
+            <span class="fa fa-times"></span>
+        </div>
+    </div>
+    <div class="panel-left with-pagination" ng-scrollbars>
+        <div class="box-mediaThumb" ng-class="{'active':damMediaViewer.currentMedia===$index+1}" ng-repeat="media in damMediaViewer.medias" ng-click="damMediaViewer.setMedia($index+1)">
+            <div class="img-middle-responsive">
+                <div class="responsive-container" >
+                    <div class="dummy"></div>
+                    <div class="img-container">
+                        <div class="centerer"></div>
+                        <img ng-src="{{media.thumbnail}}"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="body with-pagination" ng-class="{'panel-active':damMediaViewer.panelActive}">
+        <div class="box-btnNav box-btnNav-left" ng-if="damMediaViewer.prev" ng-click="damMediaViewer.setMedia(false,-1)">
+            <div class="btnNav btnNav-left">
+                <i class="fa fa-arrow-left"></i>
+            </div>
+        </div>
+        <div class="box-btnNav box-btnNav-right" ng-if="damMediaViewer.next" ng-click="damMediaViewer.setMedia(false,1)">
+            <div class="btnNav btnNav-right">
+                <i class="fa fa-arrow-right"></i>
+            </div>
+        </div>
+        <div class="box-none" ng-if="!damMediaViewer.checkSupportedMedia(damMediaViewer.media.type)">
+            <h3>Tipo di media non supportato</h3>
+        </div>
+        <div ng-show="damMediaViewer.media.type==='IMAGE'" class="box-img">
+            <img ng-src="{{damMediaViewer.media.url}}" />
+        </div>
+        <div class="box-pdf" ng-if="damMediaViewer.media.type==='PDF'">
+            <iframe width="100%" height="100%" ng-src="{{damMediaViewer.media.PdfUrl}}" frameborder="0"></iframe>
+        </div>
+        <div class="box-multimedia" ng-if="damMediaViewer.media.type==='VIDEO' || damMediaViewer.media.type==='AUDIO'">
+            <videogular vg-update-time="damMediaViewer.videogular.onUpdateTime($currentTime, $duration)" vg-theme="damMediaViewer.videogular.config.theme">
+                <vg-media vg-src="damMediaViewer.videogular.config.sources">
+                </vg-media>
+
+                <vg-controls>
+                    <vg-play-pause-button></vg-play-pause-button>
+                    <vg-time-display>{{ damMediaViewer.videogular.currentTime | date:'mm:ss' }}</vg-time-display>
+                    <vg-scrub-bar>
+                        <vg-scrub-bar-current-time></vg-scrub-bar-current-time>
+                    </vg-scrub-bar>
+                    <vg-time-display>{{ damMediaViewer.videogular.totalTime | date:'mm:ss' }}</vg-time-display>
+                    <vg-volume>
+                        <vg-mute-button></vg-mute-button>
+                        <vg-volume-bar></vg-volume-bar>
+                    </vg-volume>
+                    <vg-fullscreen-button></vg-fullscreen-button>
+                </vg-controls>
+
+                <vg-overlay-play></vg-overlay-play>
+                <vg-poster vg-url='damMediaViewer.videogular.config.plugins.poster'></vg-poster>
+            </videogular>
+        </div>
+    </div>
+</div>

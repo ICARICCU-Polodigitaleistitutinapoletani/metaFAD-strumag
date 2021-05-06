@@ -1,0 +1,11 @@
+node_modules/
+bower_components/
+coverage/
+.sass-cache/
+.idea/
+.tmp/
+dist/
+old/
+src/js/config_local.js
+
+src/js/config\.local\.js
